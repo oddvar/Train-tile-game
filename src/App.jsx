@@ -34,8 +34,8 @@ const TILE_TYPES = {
 
 // Tile sprite positions in the image (row, col)
 const TILE_SPRITES = {
-  'N-S': { row: 0, col: 0 },
-  'E-W': { row: 1, col: 1 },
+  'N-S': { row: 1, col: 2 },
+  'E-W': { row: 2, col: 3 },
   'N-E': { row: 0, col: 2 },
   'E-S': { row: 1, col: 2 },
   'S-W': { row: 2, col: 0 },
