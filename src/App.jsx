@@ -34,17 +34,21 @@ const TILE_TYPES = {
 
 // Tile sprite positions in the image (row, col)
 const TILE_SPRITES = {
-  'N-S': { row: 1, col: 2 },
-  'E-W': { row: 2, col: 3 },
-  'N-E': { row: 0, col: 2 },
-  'E-S': { row: 1, col: 2 },
-  'S-W': { row: 2, col: 0 },
-  'W-N': { row: 0, col: 1 },
-  'N-E-S': { row: 1, col: 0 },
-  'E-S-W': { row: 1, col: 3 },
-  'S-W-N': { row: 2, col: 1 },
-  'W-N-E': { row: 0, col: 3 },
-  'N-E-S-W': { row: 2, col: 2 }
+  'N-S': { row: 1, col: 0 },
+  'E-W': { row: 2, col: 1 },
+  'N-E': { row: 0, col: 3 },
+  'E-S': { row: 1, col: 1 },
+  'N-W': { row: 2, col: 0 },
+  'S-W': { row: 2, col: 4 },
+  'N-E-S': { row: 1, col: 3 },
+  'N-W-S': { row: 3, col: 1 },
+  'E-S-W': { row: 3, col: 2 },
+  'E-N-W': { row: 2, col: 3 },
+  'S-W-N': { row: 0, col: 3 },
+  'S-E-N': { row: 1, col: 2 },
+  'W-N-E': { row: 2, col: 2 },
+  'W-S-E': { row: 3, col: 3 },
+  'N-E-S-W': { row: 4, col: 1 }
 }
 
 function getTileForTransition(currentDir, nextDir) {
