@@ -158,20 +158,20 @@ function App() {
     function handleKeyPress(e) {
       if (gameState !== 'playing') return
 
-      if (e.key === 'ArrowLeft') {
-        setNextDir((trainDir + 3) % 4)
+      if (e.key === 'ArrowUp') {
+        setNextDir(DIRECTIONS.N)
       } else if (e.key === 'ArrowRight') {
-        setNextDir((trainDir + 1) % 4)
-      } else if (e.key === 'ArrowUp') {
-        setNextDir((trainDir + 3) % 4)
+        setNextDir(DIRECTIONS.E)
       } else if (e.key === 'ArrowDown') {
-        setNextDir((trainDir + 1) % 4)
+        setNextDir(DIRECTIONS.S)
+      } else if (e.key === 'ArrowLeft') {
+        setNextDir(DIRECTIONS.W)
       }
     }
 
     window.addEventListener('keydown', handleKeyPress)
     return () => window.removeEventListener('keydown', handleKeyPress)
-  }, [trainDir, gameState])
+  }, [gameState])
 
   // Game loop
   useEffect(() => {
