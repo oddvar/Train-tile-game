@@ -1,7 +1,22 @@
 import { useState, useEffect, useRef } from 'react'
 import tracksImg from './assets/tracks_96x96.png'
 import trainAnimationImg from './assets/train_animation_by_elinthind_dm991ho.png'
+import keyUpImg from './assets/key-up.jpg'
+import keyUpPressedImg from './assets/key-up-pressed.jpg'
+import keyLeftImg from './assets/key-left.jpg'
+import keyLeftPressedImg from './assets/key-left-pressed.jpg'
+import keyDownImg from './assets/key-down.jpg'
+import keyDownPressedImg from './assets/key-down-pressed.jpg'
+import keyRightImg from './assets/key-right.jpg'
+import keyRightPressedImg from './assets/key-right-pressed.jpg'
 import './App.css'
+
+const KEY_ICONS = {
+  N: { normal: keyUpImg, pressed: keyUpPressedImg, alt: 'Up' },
+  W: { normal: keyLeftImg, pressed: keyLeftPressedImg, alt: 'Left' },
+  S: { normal: keyDownImg, pressed: keyDownPressedImg, alt: 'Down' },
+  E: { normal: keyRightImg, pressed: keyRightPressedImg, alt: 'Right' }
+}
 
 const TILE_SIZE = 96
 const GRID_SIZE = 3
@@ -152,25 +167,28 @@ function App() {
     { x: 1, y: 2 }
   ])
   const [visitedStations, setVisitedStations] = useState(new Set())
+  const [pressedDir, setPressedDir] = useState(null)
+
+  const ARROW_KEY_DIRS = {
+    ArrowUp: 'N',
+    ArrowRight: 'E',
+    ArrowDown: 'S',
+    ArrowLeft: 'W'
+  }
 
   // Handle keyboard input
   useEffect(() => {
-    function handleKeyPress(e) {
-      if (gameState !== 'playing') return
+    function handleKeyDown(e) {
+      const dir = ARROW_KEY_DIRS[e.key]
+      if (!dir) return
 
-      if (e.key === 'ArrowUp') {
-        setNextDir(DIRECTIONS.N)
-      } else if (e.key === 'ArrowRight') {
-        setNextDir(DIRECTIONS.E)
-      } else if (e.key === 'ArrowDown') {
-        setNextDir(DIRECTIONS.S)
-      } else if (e.key === 'ArrowLeft') {
-        setNextDir(DIRECTIONS.W)
-      }
+      setPressedDir(dir)
+      if (gameState !== 'playing') return
+      setNextDir(DIRECTIONS[dir])
     }
 
-    window.addEventListener('keydown', handleKeyPress)
-    return () => window.removeEventListener('keydown', handleKeyPress)
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
   }, [gameState])
 
   // Game loop
@@ -207,6 +225,7 @@ function App() {
               ...g,
               [tileId]: { type: newTileType }
             }))
+            setPressedDir(null)
 
             if (nextDir !== null) {
               setTrainDir(nextDir)
@@ -239,7 +258,47 @@ function App() {
   return (
     <div style={{ textAlign: 'center', padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       <h1>Train Tile Game</h1>
-      <GameCanvas grid={grid} trainPos={trainPos} trainDir={trainDir} stations={stations} />
+
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', gap: '30px' }}>
+        <GameCanvas grid={grid} trainPos={trainPos} trainDir={trainDir} stations={stations} />
+
+        <div style={{ color: '#aaa' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 50px)',
+              gridTemplateRows: 'repeat(2, 50px)',
+              gap: '6px',
+              justifyContent: 'center',
+              marginBottom: '10px'
+            }}
+          >
+            <div />
+            <img
+              src={pressedDir === 'N' ? KEY_ICONS.N.pressed : KEY_ICONS.N.normal}
+              alt={KEY_ICONS.N.alt}
+              style={{ width: '50px', height: '50px', borderRadius: '8px' }}
+            />
+            <div />
+            <img
+              src={pressedDir === 'W' ? KEY_ICONS.W.pressed : KEY_ICONS.W.normal}
+              alt={KEY_ICONS.W.alt}
+              style={{ width: '50px', height: '50px', borderRadius: '8px' }}
+            />
+            <img
+              src={pressedDir === 'S' ? KEY_ICONS.S.pressed : KEY_ICONS.S.normal}
+              alt={KEY_ICONS.S.alt}
+              style={{ width: '50px', height: '50px', borderRadius: '8px' }}
+            />
+            <img
+              src={pressedDir === 'E' ? KEY_ICONS.E.pressed : KEY_ICONS.E.normal}
+              alt={KEY_ICONS.E.alt}
+              style={{ width: '50px', height: '50px', borderRadius: '8px' }}
+            />
+          </div>
+          <p>Use arrow keys to change direction</p>
+        </div>
+      </div>
 
       <div style={{ marginBottom: '20px' }}>
         <p>Stations visited: {visitedStations.size} / {stations.length}</p>
@@ -248,7 +307,6 @@ function App() {
       </div>
 
       <div style={{ marginTop: '20px', color: '#aaa' }}>
-        <p>Use arrow keys to change direction</p>
         <p>Guide the train through all stations!</p>
       </div>
     </div>
