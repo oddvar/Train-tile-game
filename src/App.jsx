@@ -168,6 +168,7 @@ function App() {
   ])
   const [visitedStations, setVisitedStations] = useState(new Set())
   const [pressedDir, setPressedDir] = useState(null)
+  const rejectTimeoutRef = useRef(null)
 
   const ARROW_KEY_DIRS = {
     ArrowUp: 'N',
@@ -182,14 +183,27 @@ function App() {
       const dir = ARROW_KEY_DIRS[e.key]
       if (!dir) return
 
+      clearTimeout(rejectTimeoutRef.current)
       setPressedDir(dir)
+
       if (gameState !== 'playing') return
+
+      const isOpposite = DIRECTIONS[dir] === (trainDir + 2) % 4
+      if (isOpposite) {
+        // Train can't reverse - flash the key, then reset without changing course
+        rejectTimeoutRef.current = setTimeout(() => setPressedDir(null), 250)
+        return
+      }
+
       setNextDir(DIRECTIONS[dir])
     }
 
     window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [gameState])
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      clearTimeout(rejectTimeoutRef.current)
+    }
+  }, [gameState, trainDir])
 
   // Game loop
   useEffect(() => {
